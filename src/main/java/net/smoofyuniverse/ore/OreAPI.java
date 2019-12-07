@@ -37,28 +37,28 @@ import java.time.temporal.TemporalAccessor;
 
 public class OreAPI {
 	public static final URL DEFAULT_URL = getDefaultURL();
+	public static final String USER_AGENT = "SmoofyOreAPI/1.0.0";
+
 	public final URL urlBase;
-	public final String userAgent;
 	public final SessionController controller;
 	public final Gson gson;
 
-	public OreAPI(String userAgent) {
-		this(DEFAULT_URL, userAgent, null);
+	public OreAPI() {
+		this(DEFAULT_URL, null);
 	}
 
-	public OreAPI(URL urlBase, String userAgent, String apiKey) {
-		this(urlBase, userAgent, apiKey, new Gson());
+	public OreAPI(URL urlBase, String apiKey) {
+		this(urlBase, apiKey, new Gson());
 	}
 
-	public OreAPI(URL urlBase, String userAgent, String apiKey, Gson gson) {
+	public OreAPI(URL urlBase, String apiKey, Gson gson) {
 		if (urlBase == null)
 			throw new IllegalArgumentException("urlBase");
 		if (gson == null)
 			throw new IllegalArgumentException("gson");
 
 		this.urlBase = urlBase;
-		this.userAgent = userAgent;
-		this.controller = new SessionController(getUncheckedURL("authenticate"), userAgent, apiKey, gson);
+		this.controller = new SessionController(getUncheckedURL("authenticate"), apiKey, gson);
 		this.gson = gson;
 	}
 
@@ -81,17 +81,6 @@ public class OreAPI {
 		return co;
 	}
 
-	public void configureConnection(URLConnection co) {
-		co.setUseCaches(false);
-		co.setDefaultUseCaches(false);
-		co.setRequestProperty("Cache-Control", "no-store,max-age=0,no-cache");
-		co.setRequestProperty("Pragma", "no-cache");
-		co.setRequestProperty("Expires", "0");
-
-		if (this.userAgent != null)
-			co.setRequestProperty("User-Agent", this.userAgent);
-	}
-
 	public void configureSession(URLConnection co) throws IOException {
 		co.setRequestProperty("Authorization", "OreApi session=\"" + this.controller.getOrCreateSession() + "\"");
 	}
@@ -102,6 +91,15 @@ public class OreAPI {
 		} catch (MalformedURLException e) {
 			return null;
 		}
+	}
+
+	public static void configureConnection(URLConnection co) {
+		co.setUseCaches(false);
+		co.setDefaultUseCaches(false);
+		co.setRequestProperty("Cache-Control", "no-store,max-age=0,no-cache");
+		co.setRequestProperty("Pragma", "no-cache");
+		co.setRequestProperty("Expires", "0");
+		co.setRequestProperty("User-Agent", USER_AGENT);
 	}
 
 	public static Instant parseInstant(String value) {

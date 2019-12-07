@@ -35,22 +35,19 @@ import java.util.Optional;
 
 public class SessionController {
 	private final URL authenticationUrl;
-	private final String userAgent;
 	private final String apiKey;
 	private final Gson gson;
 
 	private Instant expiration;
 	private String session;
 
-	public SessionController(URL authenticationUrl, String userAgent, String apiKey, Gson gson) {
+	public SessionController(URL authenticationUrl, String apiKey, Gson gson) {
 		if (authenticationUrl == null)
 			throw new IllegalArgumentException("authenticationUrl");
-		if (userAgent == null)
-			if (gson == null)
-				throw new IllegalArgumentException("gson");
+		if (gson == null)
+			throw new IllegalArgumentException("gson");
 
 		this.authenticationUrl = authenticationUrl;
-		this.userAgent = userAgent;
 		this.apiKey = apiKey;
 		this.gson = gson;
 	}
@@ -76,19 +73,9 @@ public class SessionController {
 		try {
 			co = (HttpURLConnection) this.authenticationUrl.openConnection();
 			co.setRequestMethod("POST");
-
-			co.setUseCaches(false);
-			co.setDefaultUseCaches(false);
-			co.setRequestProperty("Cache-Control", "no-store,max-age=0,no-cache");
-			co.setRequestProperty("Pragma", "no-cache");
-			co.setRequestProperty("Expires", "0");
-
-			if (this.userAgent != null)
-				co.setRequestProperty("User-Agent", this.userAgent);
-
+			OreAPI.configureConnection(co);
 			if (this.apiKey != null)
 				co.setRequestProperty("Authorization", "OreApi apikey=\"" + this.apiKey + "\"");
-
 			co.connect();
 
 			try (InputStream in = co.getInputStream()) {
