@@ -95,7 +95,7 @@ public class OreAPI {
 
 	public static void configureConnection(URLConnection co) {
 		co.setUseCaches(false);
-		co.setDefaultUseCaches(false);
+		// co.setDefaultUseCaches(false);
 		co.setRequestProperty("Cache-Control", "no-store,max-age=0,no-cache");
 		co.setRequestProperty("Pragma", "no-cache");
 		co.setRequestProperty("Expires", "0");
