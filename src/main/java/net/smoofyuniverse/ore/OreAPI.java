@@ -32,7 +32,6 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.time.Instant;
 import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
 import java.time.temporal.TemporalAccessor;
 
 public class OreAPI {
@@ -107,15 +106,6 @@ public class OreAPI {
 	}
 
 	public static TemporalAccessor parseOffsetDateTime(String value) {
-		try {
-			return DateTimeFormatter.ISO_OFFSET_DATE_TIME.parse(value);
-		} catch (DateTimeParseException e) {
-			// temp fix
-			try {
-				return DateTimeFormatter.ISO_OFFSET_DATE_TIME.parse(value + "Z");
-			} catch (DateTimeParseException e2) {
-				throw e; // throw the original error, not the one from the second attempt
-			}
-		}
+		return DateTimeFormatter.ISO_OFFSET_DATE_TIME.parse(value);
 	}
 }
