@@ -26,8 +26,8 @@ plugins {
 }
 
 group 'net.smoofyuniverse'
-archivesBaseName = 'smoofyoreapi'
-version = '1.0.0-SNAPSHOT'
+archivesBaseName = 'oreapi'
+version = '1.0.0'
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
