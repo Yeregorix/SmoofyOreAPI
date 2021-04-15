@@ -37,7 +37,7 @@ repositories {
 }
 
 dependencies {
-    compile 'com.google.code.gson:gson:2.8.0'
+    compile 'com.google.code.gson:gson:2.8.6'
 }
 
 task javadocJar(type: Jar) {
