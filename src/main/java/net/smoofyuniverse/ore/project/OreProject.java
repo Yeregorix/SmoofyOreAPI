@@ -33,7 +33,7 @@ import java.util.Optional;
 
 public class OreProject {
 	public final String pluginId;
-	private String owner, name;
+	public String owner, name;
 
 	public OreProject(String pluginId) {
 		if (pluginId == null || pluginId.isEmpty())
@@ -41,26 +41,10 @@ public class OreProject {
 		this.pluginId = pluginId;
 	}
 
-	public void setNamespace(String owner, String name) {
-		this.owner = owner;
-		this.name = name;
-	}
-
-	public Optional<String> getOwner() {
-		return Optional.ofNullable(this.owner);
-	}
-
-	public Optional<String> getName() {
-		return Optional.ofNullable(this.name);
-	}
-
-	public String getPage() {
-		if (this.owner == null)
-			throw new IllegalArgumentException("owner");
-		if (this.name == null)
-			throw new IllegalArgumentException("name");
-
-		return "https://ore.spongepowered.org/" + this.owner + "/" + this.name;
+	public Optional<String> getPage() {
+		if (this.owner == null || this.name == null)
+			return Optional.empty();
+		return Optional.of("https://ore.spongepowered.org/" + this.owner + "/" + this.name);
 	}
 
 	public OreVersion[] getVersions(OreAPI api) throws IOException {

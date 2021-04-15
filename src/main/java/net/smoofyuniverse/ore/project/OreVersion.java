@@ -48,8 +48,8 @@ public class OreVersion {
 		this.apiVersion = apiVersion;
 	}
 
-	public String getPage() {
-		return this.project.getPage() + "/versions/" + this.name;
+	public Optional<String> getPage() {
+		return this.project.getPage().map(p -> p + "/versions/" + this.name);
 	}
 
 	static OreVersion from(OreProject project, JsonObject obj) {
