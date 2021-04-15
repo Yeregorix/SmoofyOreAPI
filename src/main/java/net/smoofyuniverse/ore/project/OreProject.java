@@ -34,7 +34,6 @@ import java.util.Optional;
 public class OreProject {
 	public final String pluginId;
 	private String owner, name;
-	private boolean synced = false;
 
 	public OreProject(String pluginId) {
 		if (pluginId == null || pluginId.isEmpty())
@@ -42,35 +41,9 @@ public class OreProject {
 		this.pluginId = pluginId;
 	}
 
-	public void syncNamespace(OreAPI api, boolean force) throws IOException {
-		if (this.synced && !force)
-			return;
-
-		HttpURLConnection co = null;
-		try {
-			co = api.openConnection("projects/" + this.pluginId);
-			co.connect();
-
-			if (co.getResponseCode() == 404) {
-				this.owner = null;
-				this.name = null;
-			} else {
-				JsonObject namespace = api.gson.fromJson(new InputStreamReader(co.getInputStream()), JsonObject.class).getAsJsonObject("namespace");
-				this.owner = namespace.get("owner").getAsString();
-				this.name = namespace.get("slug").getAsString();
-			}
-
-			this.synced = true;
-		} finally {
-			if (co != null)
-				co.disconnect();
-		}
-	}
-
 	public void setNamespace(String owner, String name) {
 		this.owner = owner;
 		this.name = name;
-		this.synced = true;
 	}
 
 	public Optional<String> getOwner() {
