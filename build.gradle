@@ -21,85 +21,86 @@
  */
 
 plugins {
-    id 'java'
-    id 'maven'
+    id 'java-library'
+    id 'maven-publish'
 }
 
 group 'net.smoofyuniverse'
 version '1.0.2-SNAPSHOT'
 
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(8)
+    }
+    withJavadocJar()
+    withSourcesJar()
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = "utf-8"
+}
 
 repositories {
     mavenCentral()
 }
 
 dependencies {
-    compile 'com.google.code.gson:gson:2.8.6'
+    api 'com.google.code.gson:gson:2.8.6'
 }
 
-task javadocJar(type: Jar) {
-    classifier = 'javadoc'
-    from javadoc
-}
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            artifactId = 'oreapi'
+            from components.java
 
-task sourcesJar(type: Jar) {
-    classifier = 'sources'
-    from sourceSets.main.allSource
-}
-
-artifacts {
-    archives javadocJar, sourcesJar
-}
-
-if (project.hasProperty("signing.keyId")) {
-    apply plugin: 'signing'
-    signing {
-        sign configurations.archives
-    }
-}
-
-uploadArchives {
-    repositories {
-        mavenDeployer {
-            beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
-
-            repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
-                authentication(userName: findProperty('ossrhUsername'), password: findProperty('ossrhPassword'))
-            }
-
-            snapshotRepository(url: "https://oss.sonatype.org/content/repositories/snapshots/") {
-                authentication(userName: findProperty('ossrhUsername'), password: findProperty('ossrhPassword'))
-            }
-
-            pom.project {
-                name 'SmoofyOreAPI'
-                packaging 'jar'
-                description "A simple java wrapper for Ore API."
-                url 'https://github.com/Yeregorix/SmoofyOreAPI'
+            pom {
+                name = 'SmoofyOreAPI'
+                packaging = 'jar'
+                description = "A simple java wrapper for Ore API."
+                url = 'https://github.com/Yeregorix/SmoofyOreAPI'
 
                 scm {
-                    connection 'scm:git:https://github.com/Yeregorix/SmoofyOreAPI.git'
-                    developerConnection 'scm:git:https://github.com/Yeregorix/SmoofyOreAPI.git'
-                    url 'https://github.com/Yeregorix/SmoofyOreAPI'
+                    connection = 'scm:git:https://github.com/Yeregorix/SmoofyOreAPI.git'
+                    developerConnection = 'scm:git:https://github.com/Yeregorix/SmoofyOreAPI.git'
+                    url = 'https://github.com/Yeregorix/SmoofyOreAPI'
                 }
 
                 licenses {
                     license {
-                        name 'MIT License'
-                        url 'https://opensource.org/licenses/MIT'
+                        name = 'MIT License'
+                        url = 'https://opensource.org/licenses/MIT'
                     }
                 }
 
                 developers {
                     developer {
-                        id 'Yeregorix'
-                        name 'Hugo Dupanloup'
-                        email 'yeregorix@smoofyuniverse.net'
+                        id = 'Yeregorix'
+                        name = 'Hugo Dupanloup'
+                        email = 'yeregorix@smoofyuniverse.net'
                     }
                 }
             }
         }
+    }
+
+    repositories {
+        maven {
+            url = version.endsWith('SNAPSHOT') ?
+                    "https://oss.sonatype.org/content/repositories/snapshots/"
+                    : "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
+
+            credentials {
+                username findProperty('ossrhUsername')
+                password findProperty('ossrhPassword')
+            }
+        }
+    }
+}
+
+if (project.hasProperty("signing.keyId")) {
+    apply plugin: 'signing'
+    signing {
+        sign publishing.publications.mavenJava
     }
 }
