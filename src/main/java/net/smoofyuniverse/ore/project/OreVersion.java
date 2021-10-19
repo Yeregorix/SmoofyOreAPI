@@ -29,11 +29,39 @@ import java.time.Instant;
 import java.util.Optional;
 import java.util.function.Predicate;
 
+/**
+ * A version of a project on Ore.
+ */
 public class OreVersion {
+	/**
+	 * The project.
+	 */
 	public final OreProject project;
-	public final String name, apiVersion;
+
+	/**
+	 * The name of the version.
+	 */
+	public final String name;
+
+	/**
+	 * The version of the SpongeAPI dependency.
+	 * May be null.
+	 */
+	public final String apiVersion;
+
+	/**
+	 * The creation instant.
+	 */
 	public final Instant createdAt;
 
+	/**
+	 * Creates a version object.
+	 *
+	 * @param project The project.
+	 * @param name The name.
+	 * @param createdAt The creation instant.
+	 * @param apiVersion The version of SpongeAPI dependency. May be null.
+	 */
 	public OreVersion(OreProject project, String name, Instant createdAt, String apiVersion) {
 		if (project == null)
 			throw new IllegalArgumentException("project");
@@ -48,6 +76,11 @@ public class OreVersion {
 		this.apiVersion = apiVersion;
 	}
 
+	/**
+	 * Gets the URL of the version page.
+	 *
+	 * @return The URL as a string.
+	 */
 	public Optional<String> getPage() {
 		return this.project.getPage().map(p -> p + "/versions/" + this.name);
 	}
@@ -65,6 +98,13 @@ public class OreVersion {
 		return new OreVersion(project, obj.get("name").getAsString(), OreAPI.parseInstant(obj.get("created_at").getAsString()), apiVersion);
 	}
 
+	/**
+	 * Gets the latest version matching the predicate.
+	 *
+	 * @param versions The versions to search in.
+	 * @param predicate The predicate.
+	 * @return The latest version matching the predicate.
+	 */
 	public static Optional<OreVersion> getLatest(OreVersion[] versions, Predicate<OreVersion> predicate) {
 		OreVersion latestVersion = null;
 		for (OreVersion version : versions) {

@@ -31,26 +31,67 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.util.Optional;
 
+/**
+ * A project on Ore.
+ */
 public class OreProject {
+	/**
+	 * The plugin ID.
+	 */
 	public final String pluginId;
-	public String owner, name;
 
+	/**
+	 * The owner.
+	 */
+	public String owner;
+
+	/**
+	 * The name.
+	 */
+	public String name;
+
+	/**
+	 * Creates a project object.
+	 *
+	 * @param pluginId The plugin ID.
+	 */
 	public OreProject(String pluginId) {
 		if (pluginId == null || pluginId.isEmpty())
 			throw new IllegalArgumentException("pluginId");
 		this.pluginId = pluginId;
 	}
 
+	/**
+	 * Gets the URL of the project page.
+	 *
+	 * @return The URL as a string.
+	 */
 	public Optional<String> getPage() {
 		if (this.owner == null || this.name == null)
 			return Optional.empty();
 		return Optional.of("https://ore.spongepowered.org/" + this.owner + "/" + this.name);
 	}
 
+	/**
+	 * Gets the latest versions available.
+	 *
+	 * @param api The API.
+	 * @return The versions.
+	 * @throws IOException if an I/O error occurs.
+	 */
 	public OreVersion[] getVersions(OreAPI api) throws IOException {
 		return getVersions(api, 0, 10);
 	}
 
+	/**
+	 * Gets the versions available.
+	 *
+	 * @param api The API.
+	 * @param offset The index of the first version to get. Sorted by creation date.
+	 * @param limit The maximum number of versions to get.
+	 * @return The versions.
+	 * @throws IOException if an I/O error occurs.
+	 */
 	public OreVersion[] getVersions(OreAPI api, int offset, int limit) throws IOException {
 		if (offset < 0)
 			throw new IllegalArgumentException("offset");
