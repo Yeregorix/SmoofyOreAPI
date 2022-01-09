@@ -36,7 +36,7 @@ import java.time.temporal.TemporalAccessor;
 
 public class OreAPI {
 	public static final URL DEFAULT_URL = getDefaultURL();
-	public static final String USER_AGENT = "SmoofyOreAPI/1.0.1";
+	public static final String USER_AGENT = "SmoofyOreAPI/1.0.2";
 
 	public final URL urlBase;
 	public final SessionController controller;
