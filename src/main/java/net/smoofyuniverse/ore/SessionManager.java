@@ -33,7 +33,10 @@ import java.net.URL;
 import java.time.Instant;
 import java.util.Optional;
 
-public class SessionController {
+/**
+ * A manager for the session.
+ */
+public class SessionManager {
 	private final URL authenticationUrl;
 	private final String apiKey;
 	private final Gson gson;
@@ -41,7 +44,14 @@ public class SessionController {
 	private Instant expiration;
 	private String session;
 
-	public SessionController(URL authenticationUrl, String apiKey, Gson gson) {
+	/**
+	 * Creates a session manager.
+	 *
+	 * @param authenticationUrl The authentication endpoint.
+	 * @param apiKey The API key.
+	 * @param gson The Gson.
+	 */
+	public SessionManager(URL authenticationUrl, String apiKey, Gson gson) {
 		if (authenticationUrl == null)
 			throw new IllegalArgumentException("authenticationUrl");
 		if (gson == null)
@@ -52,22 +62,44 @@ public class SessionController {
 		this.gson = gson;
 	}
 
+	/**
+	 * Gets the expiration instant of the current session.
+	 *
+	 * @return The expiration instant.
+	 */
 	public Instant getExpiration() {
 		if (this.expiration == null)
 			throw new IllegalStateException("No session");
 		return this.expiration;
 	}
 
+	/**
+	 * Gets the current session token.
+	 *
+	 * @return The session token.
+	 */
 	public Optional<String> getSession() {
 		return Optional.ofNullable(this.session);
 	}
 
+	/**
+	 * Gets the session token.
+	 * If uninitialized or outdated, a new token is created.
+	 *
+	 * @return The session token.
+	 * @throws IOException if an I/O error occurs.
+	 */
 	public String getOrCreateSession() throws IOException {
 		if (this.session == null || this.expiration.toEpochMilli() - System.currentTimeMillis() < 30_000)
 			authenticate();
 		return this.session;
 	}
 
+	/**
+	 * Authenticates and stores a new session token.
+	 *
+	 * @throws IOException if an I/O error occurs.
+	 */
 	public void authenticate() throws IOException {
 		HttpURLConnection co = null;
 		try {
