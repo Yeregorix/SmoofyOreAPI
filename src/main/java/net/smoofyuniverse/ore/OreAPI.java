@@ -46,7 +46,7 @@ public class OreAPI {
 	/**
 	 * The user agent used when connecting.
 	 */
-	public static final String USER_AGENT = "SmoofyOreAPI/1.0.2";
+	public static final String USER_AGENT = "SmoofyOreAPI/1.0.3";
 
 	/**
 	 * The base URL for endpoints.
