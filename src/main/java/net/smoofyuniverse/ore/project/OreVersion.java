@@ -26,6 +26,9 @@ import com.google.gson.JsonObject;
 import net.smoofyuniverse.ore.OreAPI;
 
 import java.time.Instant;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 import java.util.function.Predicate;
 
@@ -44,25 +47,26 @@ public class OreVersion {
 	public final String name;
 
 	/**
-	 * The version of the SpongeAPI dependency.
-	 * May be null.
-	 */
-	public final String apiVersion;
-
-	/**
 	 * The creation instant.
 	 */
 	public final Instant createdAt;
 
 	/**
+	 * The dependencies.
+	 * Key: plugin id.
+	 * Value: version, may be null.
+	 */
+	public final Map<String, String> dependencies;
+
+	/**
 	 * Creates a version object.
 	 *
-	 * @param project The project.
-	 * @param name The name.
-	 * @param createdAt The creation instant.
-	 * @param apiVersion The version of SpongeAPI dependency. May be null.
+	 * @param project      The project.
+	 * @param name         The name.
+	 * @param createdAt    The creation instant.
+	 * @param dependencies The dependencies.
 	 */
-	public OreVersion(OreProject project, String name, Instant createdAt, String apiVersion) {
+	public OreVersion(OreProject project, String name, Instant createdAt, Map<String, String> dependencies) {
 		if (project == null)
 			throw new IllegalArgumentException("project");
 		if (name == null)
@@ -73,7 +77,7 @@ public class OreVersion {
 		this.project = project;
 		this.name = name;
 		this.createdAt = createdAt;
-		this.apiVersion = apiVersion;
+		this.dependencies = Collections.unmodifiableMap(dependencies);
 	}
 
 	/**
@@ -86,16 +90,16 @@ public class OreVersion {
 	}
 
 	static OreVersion from(OreProject project, JsonObject obj) {
-		String apiVersion = null;
+		Map<String, String> dependencies = new HashMap<>();
 		for (Object e : obj.getAsJsonArray("dependencies")) {
 			JsonObject d = (JsonObject) e;
-			if (d.get("plugin_id").getAsString().equals("spongeapi")) {
-				apiVersion = d.get("version").getAsString();
-				break;
-			}
+			dependencies.put(d.get("plugin_id").getAsString(), d.get("version").getAsString());
 		}
 
-		return new OreVersion(project, obj.get("name").getAsString(), OreAPI.parseInstant(obj.get("created_at").getAsString()), apiVersion);
+		return new OreVersion(project,
+				obj.get("name").getAsString(),
+				OreAPI.parseInstant(obj.get("created_at").getAsString()),
+				dependencies);
 	}
 
 	/**
