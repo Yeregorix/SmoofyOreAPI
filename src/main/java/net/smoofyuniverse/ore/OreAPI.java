@@ -100,7 +100,7 @@ public class OreAPI {
 
 	/**
 	 * Gets the URL for the given endpoint.
-	 * {@link MalformedURLException is wrapped in a {@link UncheckedIOException}}.
+	 * {@link MalformedURLException} is wrapped in a {@link UncheckedIOException}.
 	 *
 	 * @param path The path of the endpoint.
 	 * @return The URL.
