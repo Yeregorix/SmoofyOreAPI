@@ -5,4 +5,4 @@ Sponge's [Ore](https://ore.spongepowered.org/) API.
 
 See [SmoofyOreUpdater](https://github.com/Yeregorix/SmoofyOreUpdater) for an example of use.
 
-The project requires Java 8 and Gradle 7 to build.
+The project requires Java 17 to build.
